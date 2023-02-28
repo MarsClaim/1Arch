@@ -34,6 +34,7 @@ const conn2 = {"name": 'development',
 "user": 'remote',
 "password" : 'jalap4'
 }
+const students = []
 
 async function sql_run(req, res, command){
     //req.body
@@ -104,7 +105,42 @@ app.post('/register', function(req, res){
         sql_run(req, res, command);
     });//Everything has to pass through this to encrypt it(#10 the way and times it will be mixing up)
 });
+//The one made locally with array
+//
 
+app.post('/register2', function(req,res){
+    let request=req.body;
+    bee.hash(request.pass, 10, async function(err, hash){
+        students.push({student: request.student, pass: hash})});
+    res.send(students)
+});
+
+app.post('/insert2', function (req,res){
+    let request= req.body;
+    students.push(request.username)
+    res.send(students)
+});
+
+app.get('/read2', function(req, res){//EndPoint to delete data
+    let request = req.body;
+    res.send(students)
+});
+
+app.get('/showll', function (req,res){
+    res.send(students);
+});
+
+app.get('showspecific', function(req,res){
+    let input = req.body;
+    res.send(students[input.index]);
+});
+
+app.post('/update2', function (req,res){
+    let input = req.body<
+    students.splice(input.index, 1, input.newName)
+    res.send(students)
+});
+//
 app.post('/login', async function(req, res){
     let cred = req.body;
     let command = `findUser '${cred.user}'`;
